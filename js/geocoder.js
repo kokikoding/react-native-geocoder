@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import GoogleApi from './googleApi.js';
+import CountryCodes from '../countryCodes.json';
 
 const { RNGeocoder } = NativeModules;
 
@@ -15,10 +16,17 @@ export default {
       return Promise.reject(new Error("invalid position: {lat, lng} required"));
     }
 
-    if (!this.apiKey) {
-      return RNGeocoder.geocodePosition(position).catch(err => {throw err});
-    }
-    return GoogleApi.geocodePosition(this.apiKey, position);
+    return RNGeocoder.geocodePosition(position).then(res => {
+      if (
+        res &&
+        res.length > 0 &&
+        CountryCodes.filter(c => c.name === res[0].country).length > 0
+      ) {
+        return res;
+      } else {
+        return GoogleApi.geocodePosition(this.apiKey, position);
+      }
+    }).catch(err => {throw err});
   },
 
   geocodeAddress(address) {
