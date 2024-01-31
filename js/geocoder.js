@@ -15,10 +15,10 @@ export default {
       return Promise.reject(new Error("invalid position: {lat, lng} required"));
     }
 
-    return RNGeocoder.geocodePosition(position).catch(err => {
-      if (!this.apiKey) { throw err; }
-      return GoogleApi.geocodePosition(this.apiKey, position);
-    });
+    if (!this.apiKey) {
+       return RNGeocoder.geocodePosition(position).catch(err => throw err);
+    }
+    return GoogleApi.geocodePosition(this.apiKey, position);
   },
 
   geocodeAddress(address) {
