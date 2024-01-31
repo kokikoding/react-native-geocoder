@@ -16,7 +16,7 @@ export default {
     }
 
     if (!this.apiKey) {
-       return RNGeocoder.geocodePosition(position).catch(err => throw err);
+       return RNGeocoder.geocodePosition(position).catch(err => {throw err});
     }
     return GoogleApi.geocodePosition(this.apiKey, position);
   },
